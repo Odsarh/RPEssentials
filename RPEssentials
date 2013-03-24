@@ -1,0 +1,112 @@
+package me.begreen98.RPEssentials;
+
+import java.io.File;
+import java.io.IOException;
+import java.util.logging.Logger;
+
+import org.bukkit.ChatColor;
+import org.bukkit.command.Command;
+import org.bukkit.command.CommandSender;
+import org.bukkit.configuration.file.FileConfiguration;
+import org.bukkit.entity.Player;
+import org.bukkit.plugin.java.JavaPlugin;
+
+public class RPEssentials extends JavaPlugin {
+  public final Logger logger = Logger.getLogger("Minecraft");
+	public static RPEssentials plugin;
+
+	@Override
+	public void onDisable() {
+		saveConfig();
+	}
+
+	@Override
+	public void onEnable() {
+		try {
+			saveConfig();
+			setupConfig(getConfig());
+			saveConfig();
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
+	}
+
+	@Override
+	public boolean onCommand(CommandSender sender, Command cmd,
+			String commandLabel, String[] args) {
+		// Setage
+		if (commandLabel.equalsIgnoreCase("setage")) {
+			sender.sendMessage(ChatColor.GRAY + "Age set to " + args[0] + "!");
+			getConfig().set(sender.getName() + ".Age", args[0]);
+			// Setname
+		} else if (commandLabel.equalsIgnoreCase("setname")) {
+			sender.sendMessage(ChatColor.GRAY + "Name set to " + args[0] + "!");
+			getConfig().set(sender.getName() + ".Name", args[0]);
+			// Setrace
+		} else if (commandLabel.equalsIgnoreCase("setrace")) {
+			sender.sendMessage(ChatColor.GRAY + "Race set to " + args[0] + "!");
+			getConfig().set(sender.getName() + ".Race", args[0]);
+		} else if (commandLabel.equalsIgnoreCase("Bio")) {
+			if (args.length == 0) {
+				sender.sendMessage(ChatColor.DARK_GRAY + " -----------"
+						+ ChatColor.GRAY + sender.getName() + "'s Bio"
+						+ ChatColor.DARK_GRAY + "-----------");
+				sender.sendMessage(ChatColor.DARK_GRAY + "Name: "
+						+ ChatColor.GRAY
+						+ getConfig().getString(sender.getName() + ".Name"));
+				sender.sendMessage(ChatColor.DARK_GRAY + "Race: "
+						+ ChatColor.GRAY
+						+ getConfig().getString(sender.getName() + ".Race"));
+				sender.sendMessage(ChatColor.DARK_GRAY + "Age: "
+						+ ChatColor.GRAY
+						+ getConfig().getString(sender.getName() + ".Age"));
+				sender.sendMessage(ChatColor.DARK_GRAY + "Bio: "
+						+ ChatColor.GRAY
+						+ getConfig().getString(sender.getName() + ".Bio"));
+			} else if (args.length == 1) {
+				Player targetPlayer = sender.getServer().getPlayer(args[0]);
+				if (sender.getServer().getPlayer(args[0]) != null) {
+					sender.sendMessage(ChatColor.DARK_GRAY + " -----------"
+							+ ChatColor.GRAY + targetPlayer.getName()
+							+ "'s Bio" + ChatColor.DARK_GRAY + "-----------");
+					sender.sendMessage(ChatColor.DARK_GRAY
+							+ "Name: "
+							+ ChatColor.GRAY
+							+ getConfig().getString(
+									targetPlayer.getName() + ".Name"));
+					sender.sendMessage(ChatColor.DARK_GRAY
+							+ "Race: "
+							+ ChatColor.GRAY
+							+ getConfig().getString(
+									targetPlayer.getName() + ".Race"));
+					sender.sendMessage(ChatColor.DARK_GRAY
+							+ "Age: "
+							+ ChatColor.GRAY
+							+ getConfig().getString(
+									targetPlayer.getName() + ".Age"));
+					sender.sendMessage(ChatColor.DARK_GRAY
+							+ "Bio: "
+							+ ChatColor.GRAY
+							+ getConfig().getString(
+									targetPlayer.getName() + ".Bio"));
+				} else {
+					sender.sendMessage(ChatColor.DARK_RED + "Player not found");
+				}
+			}
+		}
+		return false;
+	}
+
+	public void setupConfig(FileConfiguration config) throws IOException {
+		if (!new File(getDataFolder(), "RESET.FILE").exists()) {
+
+			config.set("Odsarh.Name", "Odsarh");
+			config.set("Odsarh.Age", "Unknown");
+			config.set(
+					"Odsarh.Bio",
+					"The eldest man known. He is the Arch Mage of the High Consoul. He is responsible for controling the balence of evil and good. He also decides on who will be though the art of Magic");
+			config.set("Odsarh.Race", "Human");
+			new File(getDataFolder(), "RESET.FILE").createNewFile();
+		}
+	}
+}
